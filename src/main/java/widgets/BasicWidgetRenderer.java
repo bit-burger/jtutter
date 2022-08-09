@@ -6,6 +6,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.graphics.TextGraphicsWriter;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.WrapBehaviour;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
 import java.io.IOException;
 
@@ -60,5 +61,17 @@ public class BasicWidgetRenderer {
 
     public void stopRenderingLoop() {
         shouldContinueRenderLoop = false;
+    }
+
+    public static BasicWidgetRenderer renderWidget(Widget widget) {
+        try {
+            Screen screen = new DefaultTerminalFactory().createScreen();
+            screen.startScreen();
+            BasicWidgetRenderer renderer = new BasicWidgetRenderer(screen, widget);
+            renderer.startRenderingLoop();
+            return renderer;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

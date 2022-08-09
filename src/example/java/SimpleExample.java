@@ -1,8 +1,5 @@
 import com.googlecode.lanterna.TextColor;
-import widgets.ExpandingColoredBox;
-import widgets.MaxSizeBox;
-import widgets.Padding;
-import widgets.Widget;
+import widgets.*;
 
 import java.io.IOException;
 
@@ -25,6 +22,6 @@ public class SimpleExample {
                                                         )
                                                 )
         );
-        new BaseExample(widget).start();
+        BasicWidgetRenderer.renderWidget(widget);
     }
 }
