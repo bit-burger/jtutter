@@ -7,14 +7,14 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.BasicTextImage;
 import com.googlecode.lanterna.screen.Screen;
 
-public class ColoredBox extends OptionalChildWidget {
+public class ExpandingColoredBox extends OptionalChildWidget {
     final TextColor color;
 
-    public ColoredBox(TextColor color) {
+    public ExpandingColoredBox(TextColor color) {
         this.color = color;
     }
 
-    public ColoredBox(TextColor color, Widget widget) {
+    public ExpandingColoredBox(TextColor color, Widget widget) {
         super(widget);
         this.color = color;
     }
@@ -26,6 +26,18 @@ public class ColoredBox extends OptionalChildWidget {
                                                               new TextCharacter(' ', color, color)
                                            )
         );
-        super.rawRender(x, y, width, height, screen);
+        if(child != null) {
+            child.safeRender(x, y, width, height, screen);
+        }
+    }
+
+    @Override
+    public int getMaxWidth(int maxAvailableWidth, int maxAvailableHeight) {
+        return maxAvailableWidth;
+    }
+
+    @Override
+    public int getMaxHeight(int maxAvailableWidth, int maxAvailableHeight) {
+        return maxAvailableHeight;
     }
 }

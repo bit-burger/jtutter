@@ -37,6 +37,7 @@ public final class Padding extends OptionalChildWidget {
 
     @Override
     public int getMaxHeight(int maxWidth, int maxHeight) {
+        // TODO: does this make sense, or should maxHeight be given back, and render used instead of rawRender
         int candidateHeight = top + bottom + super.getMaxHeight(maxWidth, maxHeight);
         return Math.min(maxHeight, candidateHeight);
     }
