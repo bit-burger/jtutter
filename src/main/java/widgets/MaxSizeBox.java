@@ -58,7 +58,7 @@ public class MaxSizeBox extends OptionalChildWidget {
     @Override
     public int getMaxWidth(int maxAvailableWidth, int maxAvailableHeight) {
         if(maxWidth > 0) {
-            return maxWidth;
+            return Math.min(maxWidth, maxAvailableWidth);
         }
         return super.getMaxWidth(maxAvailableWidth, maxAvailableHeight);
     }
@@ -66,7 +66,7 @@ public class MaxSizeBox extends OptionalChildWidget {
     @Override
     public int getMaxHeight(int maxAvailableWidth, int maxAvailableHeight) {
         if(maxHeight > 0) {
-            return maxHeight;
+            return Math.min(maxHeight, maxAvailableHeight);
         }
         return super.getMaxHeight(maxAvailableWidth, maxAvailableHeight);
     }
