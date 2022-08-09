@@ -1,6 +1,7 @@
 package widgets;
 
 import com.googlecode.lanterna.screen.Screen;
+import net.jcip.annotations.Immutable;
 
 /**
  * The base class for all widgets of the jTutter widget api.
@@ -33,6 +34,7 @@ import com.googlecode.lanterna.screen.Screen;
  * See {@link Padding} for an example, as more padding, decreases the usable space for the child widget.
  * </p>
  */
+@Immutable
 public abstract class Widget {
     /**
      * Let the widget render itself in the given boundaries.
