@@ -10,8 +10,7 @@ public class SimpleExample {
                         new ExpandingColoredBox(TextColor.ANSI.RED,
                                 new Padding(2,
                                         new ExpandingColoredBox(TextColor.ANSI.BLUE,
-                                                new Align(
-                                                        Alignment.topRight,
+                                                new Align(Alignment.topRight,
                                                         new MaxSizeBox(3,
                                                                 3,
                                                                 new ExpandingColoredBox(TextColor.ANSI.YELLOW)
