@@ -13,9 +13,7 @@ public enum Alignment {
     bottomCenter(BasicAlignment.end, BasicAlignment.center),
     bottomRight(BasicAlignment.end, BasicAlignment.end);
 
-    public enum BasicAlignment {
-        start, center, end,
-    }
+
 
     private final BasicAlignment verticalAlignment;
     private final BasicAlignment horizontalAlignment;
