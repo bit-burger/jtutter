@@ -26,8 +26,8 @@ public class MaxSizeBox extends OptionalChildWidget {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         if (child != null) {
-            assert maxWidth >= child.getMinWidth() : "Max width should not be less than the child minimum width";
-            assert maxHeight >= child.getMinHeight() : "Max width should not be less than the child minimum width";
+            assert maxWidth == 0 || maxWidth >= child.getMinWidth() : "Max width should not be less than the child minimum width";
+            assert maxHeight == 0 || maxHeight >= child.getMinHeight() : "Max width should not be less than the child minimum width";
         }
     }
 
