@@ -11,6 +11,7 @@ public class ColumnExample {
                                 .addChild(MaxSizeBox.width(10, MinSizeBox.square(1, new ExpandingColoredBox(TextColor.ANSI.CYAN))))
                                 .addChild(MaxSizeBox.width(5, MinSizeBox.square(1, new ExpandingColoredBox(TextColor.ANSI.YELLOW))))
                                 .repeatAll(4)
+                                .repeatFirst(1)
                                 .setMainAxisAlignment(BasicAlignment.center)
                                 .setCrossAxisAlignment(BasicAlignment.center)
                                 .build()
