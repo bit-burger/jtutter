@@ -48,9 +48,16 @@ public class ColumnBuilder {
         return this;
     }
 
-    public ColumnBuilder repeat(int howOften) {
+    public ColumnBuilder repeatLast(int howOften) {
         for (int i = 0; i < howOften; i++) {
             children.add(children.get(children.size() - 1));
+        }
+        return this;
+    }
+
+    public ColumnBuilder repeatFirst(int howOften) {
+        for (int i = 0; i < howOften; i++) {
+            children.add(children.get(0));
         }
         return this;
     }
