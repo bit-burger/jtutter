@@ -25,7 +25,7 @@ public class ExpandingColoredBox extends OptionalChildWidget {
     public void rawRender(int x, int y, int width, int height, Screen screen) {
         screen.newTextGraphics().drawImage(new TerminalPosition(x, y),
                                            new BasicTextImage(new TerminalSize(width, height),
-                                                              new TextCharacter(' ', color, color)
+                                                              new TextCharacter(' ', null, color)
                                            )
         );
         if(child != null) {

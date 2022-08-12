@@ -1,6 +1,8 @@
 package rendering;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.graphics.TextGraphicsWriter;
@@ -50,6 +52,13 @@ public class BasicWidgetRenderer {
                     } else {
                         widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen);
                     }
+                    TextCharacter cursorCharacter = screen.getBackCharacter(0, 0);
+                    screen.setCharacter(0,
+                            0,
+                            cursorCharacter
+                                    .withBackgroundColor(cursorCharacter.getForegroundColor())
+                                    .withForegroundColor(cursorCharacter.getBackgroundColor())
+                    );
                     try {
                         screen.refresh();
                     } catch (IOException e) {
