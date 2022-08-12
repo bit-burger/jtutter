@@ -1,5 +1,6 @@
 package layout;
 
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.screen.Screen;
 import base_widgets.OptionalChildWidget;
 import base_widgets.Widget;
@@ -51,7 +52,7 @@ public final class Padding extends OptionalChildWidget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
-        super.rawRender(x + left, y + top, width - left - right, height - top - bottom, screen);
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+        super.rawRender(x + left, y + top, width - left - right, height - top - bottom, screen, errorRecorder);
     }
 }

@@ -46,9 +46,9 @@ public abstract class OptionalChildWidget extends Widget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         if( child != null) {
-            child.rawRender(x, y, width, height, screen);
+            child.rawRender(x, y, width, height, screen, errorRecorder);
         }
     }
 }

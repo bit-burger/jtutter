@@ -1,5 +1,6 @@
 package content;
 
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
@@ -22,14 +23,14 @@ public class ExpandingColoredBox extends OptionalChildWidget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         screen.newTextGraphics().drawImage(new TerminalPosition(x, y),
                                            new BasicTextImage(new TerminalSize(width, height),
                                                               new TextCharacter(' ', null, color)
                                            )
         );
         if(child != null) {
-            child.safeRender(x, y, width, height, screen);
+            child.safeRender(x, y, width, height, screen, errorRecorder);
         }
     }
 

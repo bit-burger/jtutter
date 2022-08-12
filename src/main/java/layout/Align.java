@@ -1,5 +1,6 @@
 package layout;
 
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.screen.Screen;
 import base_widgets.OneChildWidget;
 import base_widgets.Widget;
@@ -13,7 +14,7 @@ public class Align extends OneChildWidget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         // TODO: split up in different method
         final int childWidth = child.getMaxWidth(width, height);
         final int restWidth = width - childWidth;
@@ -29,7 +30,7 @@ public class Align extends OneChildWidget {
             case center -> y + restHeight / 2;
             case end -> y + restHeight;
         };
-        super.rawRender(childX, childY, childWidth, childHeight, screen);
+        super.rawRender(childX, childY, childWidth, childHeight, screen, errorRecorder);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package layout;
 
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.screen.Screen;
 import base_widgets.Widget;
 
@@ -80,28 +81,36 @@ public class Column extends Widget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         if (usesFlex) {
-            flexRender(x, y, width, height, screen);
+            flexRender(x, y, width, height, screen, errorRecorder);
         } else {
-            nonFlexRender(x, y, width, height, screen);
+            nonFlexRender(x, y, width, height, screen, errorRecorder);
         }
     }
 
-    private void renderChild(Widget child, int x, int y, int availableWidth, int childHeight, Screen screen) {
+    private void renderChild(
+            Widget child,
+            int x,
+            int y,
+            int availableWidth,
+            int childHeight,
+            Screen screen,
+            WidgetErrorRecorder errorRecorder
+    ) {
         int childMaxWidth = child.getMaxWidth(availableWidth, childHeight);
         if (childMaxWidth >= availableWidth) {
-            child.rawRender(x, y, availableWidth, childHeight, screen);
+            child.rawRender(x, y, availableWidth, childHeight, screen, errorRecorder);
         } else {
             switch (crossAxisAlignment) {
                 case center -> x += (int) Math.floor((availableWidth - childMaxWidth) / 2.0);
                 case end -> x += availableWidth - childMaxWidth;
             }
-            child.rawRender(x, y, childMaxWidth, childHeight, screen);
+            child.rawRender(x, y, childMaxWidth, childHeight, screen, errorRecorder);
         }
     }
 
-    private void flexRender(int x, int y, int width, int height, Screen screen) {
+    private void flexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         int remainingHeightForFlex = height - allWidgetsMinHeight;
         int numberOfAllowedRoundUps = remainingHeightForFlex;
         final List<Double> roundUps = new ArrayList<>();
@@ -140,19 +149,19 @@ public class Column extends Widget {
                 }
                 childRealHeight = child.getMaxHeight(width, childUsedHeight);
             }
-            renderChild(child, x, y, width, childRealHeight, screen);
+            renderChild(child, x, y, width, childRealHeight, screen, errorRecorder);
             y += childUsedHeight;
         }
     }
 
-    private void nonFlexRender(int x, int y, int width, int height, Screen screen) {
+    private void nonFlexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         switch (mainAxisAlignment) {
             case center -> y += Math.floor((height - allWidgetsMinHeight) / 2.0);
             case end -> y += height - allWidgetsMinHeight;
         }
         for (Widget child : children) {
             int childHeight = child.getMinHeight();
-            renderChild(child, x, y, width, childHeight, screen);
+            renderChild(child, x, y, width, childHeight, screen, errorRecorder);
             y += childHeight;
         }
     }

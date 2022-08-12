@@ -31,7 +31,7 @@ public abstract class OneChildWidget extends Widget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
-        child.rawRender(x, y, width, height, screen);
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+        child.rawRender(x, y, width, height, screen, errorRecorder);
     }
 }

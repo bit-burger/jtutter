@@ -14,7 +14,7 @@ import net.jcip.annotations.Immutable;
  * {@link Widget#getMinHeight()} and {@link Widget#getMinHeight()}.
  * </p>
  * <p>
- * Alternatively use the the {@link Widget#safeRender(int, int, int, int, Screen)} method,
+ * Alternatively use the the {@link Widget#safeRender(int, int, int, int, Screen, WidgetErrorRecorder)} method,
  * to automatically size the boundaries appropriately, if they become too big.
  * It still cannot change anything, if the boundaries are too small.
  * This means that before rendering a Widget, the renderer should always first check
@@ -47,20 +47,20 @@ public abstract class Widget {
      *
      * @param screen The {@link Screen} on which to render, only render in the boundaries defined by x, y, width, and
      *               height
-     * @see Widget#safeRender(int, int, int, int, Screen) for an alterntive,
+     * @see Widget#safeRender(int, int, int, int, Screen, WidgetErrorRecorder) for an alterntive,
      * that does not care about a width or height that is too big.
      */
-    public abstract void rawRender(int x, int y, int width, int height, Screen screen);
+    public abstract void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder);
 
     /**
-     * Calls {@link Widget#rawRender(int, int, int, int, Screen)},
-     * use instead of {@link Widget#rawRender(int, int, int, int, Screen)} directly,
+     * Calls {@link Widget#rawRender(int, int, int, int, Screen, WidgetErrorRecorder)},
+     * use instead of {@link Widget#rawRender(int, int, int, int, Screen, WidgetErrorRecorder)} directly,
      * as this method does not care about boundaries being bigger
      * than {@link Widget#getMaxWidth(int, int)} and {@link Widget#getMaxHeight(int, int)},
      * which is the limit for a Widget to render in.
      * The method will simply resize the boundaries to the top left corner, if the boundaries are too big.
      */
-    public final void safeRender(int x, int y, int width, int height, Screen screen) {
+    public final void safeRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         int maxWidth = getMaxWidth(width, height);
         int maxHeight = getMaxHeight(width, height);
         if(maxWidth < width) {
@@ -69,7 +69,7 @@ public abstract class Widget {
         if(maxHeight < height) {
             height = maxHeight;
         }
-        rawRender(x, y, width, height, screen);
+        rawRender(x, y, width, height, screen, errorRecorder);
     }
 
     /**

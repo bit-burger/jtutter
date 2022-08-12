@@ -1,6 +1,7 @@
 package rendering;
 
-import com.googlecode.lanterna.TerminalPosition;
+import base_widgets.BasicWidgetErrorRecorder;
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
@@ -12,6 +13,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import base_widgets.Widget;
 
 import java.io.IOException;
+import java.util.List;
 
 public class BasicWidgetRenderer {
     final private Screen screen;
@@ -23,12 +25,14 @@ public class BasicWidgetRenderer {
         this.widgetToRender = widgetToRender;
     }
 
-    private void writeErrorOnScreen(String errorMessage, Screen screen) {
+    private void writeErrorsOnScreen(List<String> errorMessages, Screen screen) {
         TextGraphics textGraphics = screen.newTextGraphics();
         TextGraphicsWriter textGraphicsWriter = new TextGraphicsWriter(textGraphics);
         textGraphicsWriter.setForegroundColor(TextColor.ANSI.RED);
         textGraphicsWriter.setWrapBehaviour(WrapBehaviour.WORD);
-        textGraphicsWriter.putString(errorMessage);
+        for (String errorMessage : errorMessages) {
+            textGraphicsWriter.putString(" - " + errorMessage + "\n");
+        }
     }
 
     public void startRenderingLoop() {
@@ -45,15 +49,24 @@ public class BasicWidgetRenderer {
                 }
                 if (size != null) {
                     screen.clear();
+                    WidgetErrorRecorder errorRecorder = new BasicWidgetErrorRecorder();
                     if (widgetToRender.getMinWidth() > size.getColumns()) {
-                        writeErrorOnScreen("Terminal not wide enough, increase width to remove this error", screen);
-                    } else if (widgetToRender.getMinHeight() > size.getRows()) {
-                        writeErrorOnScreen("Terminal not high enough, increase height to remove this error", screen);
-                    } else {
-                        widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen);
+                        errorRecorder.terminalToSlim(widgetToRender.getMinWidth() - size.getColumns());
+                    }
+                    if (widgetToRender.getMinHeight() > size.getRows()) {
+                        errorRecorder.terminalToLow(widgetToRender.getMinHeight() - size.getRows());
+                    }
+                    if (errorRecorder.getAllErrors().isEmpty()) {
+                        widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);
+                    }
+                    List<String> errors = errorRecorder.getAllErrors();
+                    if (!errors.isEmpty()) {
+                        screen.clear();
+                        writeErrorsOnScreen(errors, screen);
                     }
                     TextCharacter cursorCharacter = screen.getBackCharacter(0, 0);
-                    screen.setCharacter(0,
+                    screen.setCharacter(
+                            0,
                             0,
                             cursorCharacter
                                     .withBackgroundColor(cursorCharacter.getForegroundColor())

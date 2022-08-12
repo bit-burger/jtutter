@@ -1,5 +1,6 @@
 package content;
 
+import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
@@ -18,12 +19,12 @@ public class ShrinkingColoredBox extends OneChildWidget {
     }
 
     @Override
-    public void rawRender(int x, int y, int width, int height, Screen screen) {
+    public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         screen.newTextGraphics().drawImage(new TerminalPosition(x, y),
                                            new BasicTextImage(new TerminalSize(width, height),
                                                               new TextCharacter(' ', null, color)
                                            )
         );
-        super.rawRender(x, y, width, height, screen);
+        super.rawRender(x, y, width, height, screen, errorRecorder);
     }
 }
