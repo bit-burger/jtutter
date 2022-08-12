@@ -1,4 +1,7 @@
-package widgets;
+package layout;
+
+import base_widgets.OptionalChildWidget;
+import base_widgets.Widget;
 
 public class MaxSizeBox extends OptionalChildWidget {
     private final int maxWidth;

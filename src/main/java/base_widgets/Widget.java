@@ -1,6 +1,7 @@
-package widgets;
+package base_widgets;
 
 import com.googlecode.lanterna.screen.Screen;
+import layout.Padding;
 import net.jcip.annotations.Immutable;
 
 /**

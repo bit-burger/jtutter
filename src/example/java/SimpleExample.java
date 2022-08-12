@@ -1,16 +1,23 @@
+import base_widgets.Widget;
 import com.googlecode.lanterna.TextColor;
-import widgets.*;
+import content.ExpandingColoredBox;
+import layout.Align;
+import layout.Alignment;
+import layout.MaxSizeBox;
+import layout.Padding;
+import rendering.BasicWidgetRenderer;
 
 import java.io.IOException;
 
 public class SimpleExample {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Widget widget = new ExpandingColoredBox(TextColor.ANSI.BLACK,
                 new Padding(5,
                         new ExpandingColoredBox(TextColor.ANSI.RED,
                                 new Padding(2,
                                         new ExpandingColoredBox(TextColor.ANSI.BLUE,
-                                                new Align(Alignment.topRight,
+                                                new Align(
+                                                        Alignment.topRight,
                                                         new MaxSizeBox(3,
                                                                 3,
                                                                 new ExpandingColoredBox(TextColor.ANSI.YELLOW)

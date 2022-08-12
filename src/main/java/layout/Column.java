@@ -1,6 +1,7 @@
-package widgets;
+package layout;
 
 import com.googlecode.lanterna.screen.Screen;
+import base_widgets.Widget;
 
 import java.util.ArrayList;
 import java.util.Comparator;

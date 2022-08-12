@@ -1,6 +1,8 @@
-package widgets;
+package layout;
 
 import com.googlecode.lanterna.screen.Screen;
+import base_widgets.OneChildWidget;
+import base_widgets.Widget;
 
 public class Align extends OneChildWidget {
     final private Alignment alignment;

@@ -1,4 +1,4 @@
-package widgets;
+package layout;
 
 public enum Alignment {
     topLeft(BasicAlignment.start, BasicAlignment.start),

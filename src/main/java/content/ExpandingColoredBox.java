@@ -1,4 +1,4 @@
-package widgets;
+package content;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -6,6 +6,8 @@ import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.BasicTextImage;
 import com.googlecode.lanterna.screen.Screen;
+import base_widgets.OptionalChildWidget;
+import base_widgets.Widget;
 
 public class ExpandingColoredBox extends OptionalChildWidget {
     final TextColor color;

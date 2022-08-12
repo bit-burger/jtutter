@@ -1,7 +1,9 @@
+import base_widgets.Widget;
 import com.googlecode.lanterna.TextColor;
-import widgets.*;
-
-import java.io.IOException;
+import content.ExpandingColoredBox;
+import content.ShrinkingColoredBox;
+import layout.*;
+import rendering.BasicWidgetRenderer;
 
 public class FlexColumnExample {
     public static void main(String[] args) {

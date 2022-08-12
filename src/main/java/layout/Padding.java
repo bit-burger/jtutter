@@ -1,6 +1,8 @@
-package widgets;
+package layout;
 
 import com.googlecode.lanterna.screen.Screen;
+import base_widgets.OptionalChildWidget;
+import base_widgets.Widget;
 
 public final class Padding extends OptionalChildWidget {
     final int top, bottom, left, right;

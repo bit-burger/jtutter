@@ -1,4 +1,7 @@
-package widgets;
+package layout;
+
+import base_widgets.OneChildWidget;
+import base_widgets.Widget;
 
 public class MinSizeBox extends OneChildWidget {
     private final int minWidth;

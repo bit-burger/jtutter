@@ -1,4 +1,4 @@
-package widgets;
+package rendering;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -7,6 +7,7 @@ import com.googlecode.lanterna.graphics.TextGraphicsWriter;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.WrapBehaviour;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import base_widgets.Widget;
 
 import java.io.IOException;
 
