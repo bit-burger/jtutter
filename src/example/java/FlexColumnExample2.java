@@ -2,7 +2,7 @@ import base_widgets.Widget;
 import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
 import layout.*;
-import rendering.BasicWidgetRenderer;
+import rendering.basic.BasicWidgetRenderer;
 
 public class FlexColumnExample2 {
     public static void main(String[] args) {

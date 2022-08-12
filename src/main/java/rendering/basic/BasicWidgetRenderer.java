@@ -1,6 +1,5 @@
-package rendering;
+package rendering.basic;
 
-import base_widgets.BasicWidgetErrorRecorder;
 import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;

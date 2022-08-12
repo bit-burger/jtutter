@@ -1,4 +1,6 @@
-package base_widgets;
+package rendering.basic;
+
+import base_widgets.WidgetErrorRecorder;
 
 import java.util.ArrayList;
 import java.util.List;

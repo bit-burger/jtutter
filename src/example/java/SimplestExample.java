@@ -3,7 +3,7 @@ import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
 import layout.MaxSizeBox;
 import layout.MinSizeBox;
-import rendering.BasicWidgetRenderer;
+import rendering.basic.BasicWidgetRenderer;
 
 public class SimplestExample {
     public static void main(String[] args) {

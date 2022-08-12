@@ -2,9 +2,7 @@ import base_widgets.Widget;
 import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
 import layout.*;
-import rendering.BasicWidgetRenderer;
-
-import java.io.IOException;
+import rendering.basic.BasicWidgetRenderer;
 
 public class ColumnExample {
     public static void main(String[] args) {

@@ -5,9 +5,7 @@ import layout.Align;
 import layout.Alignment;
 import layout.MaxSizeBox;
 import layout.Padding;
-import rendering.BasicWidgetRenderer;
-
-import java.io.IOException;
+import rendering.basic.BasicWidgetRenderer;
 
 public class SimpleExample {
     public static void main(String[] args) {

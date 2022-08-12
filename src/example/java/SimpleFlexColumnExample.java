@@ -3,9 +3,7 @@ import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
 import layout.ColumnBuilder;
 import layout.Padding;
-import rendering.BasicWidgetRenderer;
-
-import java.io.IOException;
+import rendering.basic.BasicWidgetRenderer;
 
 public class SimpleFlexColumnExample {
     public static void main(String[] args) {
