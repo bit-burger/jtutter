@@ -14,35 +14,59 @@ public abstract class OptionalChildWidget extends Widget {
     }
 
     @Override
-    public int getMinWidth() {
-        if (child == null) {
-            return super.getMinWidth();
+    public int getMinHeight(int availableWidth) {
+        if(child == null) {
+            return super.getMinHeight(availableWidth);
         }
-        return child.getMinWidth();
+        return child.getMinHeight(availableWidth);
     }
 
     @Override
-    public int getMinHeight() {
-        if (child == null) {
-            return super.getMinWidth();
+    public int getMinWidth(int availableHeight) {
+        if(child == null) {
+            return super.getMinWidth(availableHeight);
         }
-        return child.getMinHeight();
+        return child.getMinWidth(availableHeight);
     }
 
     @Override
-    public int getMaxWidth(int maxAvailableWidth, int maxAvailableHeight) {
-        if (child != null) {
-            return child.getMaxWidth(maxAvailableWidth, maxAvailableHeight);
+    public int getMaxHeight(int maxWidth, int maxHeight) {
+        if(child == null) {
+            return super.getMaxHeight(maxWidth, maxHeight);
         }
-        return super.getMaxWidth(maxAvailableWidth, maxAvailableHeight);
+        return child.getMaxHeight(maxWidth, maxHeight);
     }
 
     @Override
-    public int getMaxHeight(int maxAvailableWidth, int maxAvailableHeight) {
-        if (child != null) {
-            return child.getMaxHeight(maxAvailableWidth, maxAvailableHeight);
+    public int getMaxWidth(int maxWidth, int maxHeight) {
+        if(child == null) {
+            return super.getMaxWidth(maxWidth, maxHeight);
         }
-        return super.getMaxHeight(maxAvailableWidth, maxAvailableHeight);
+        return child.getMaxWidth(maxWidth, maxHeight);
+    }
+
+    @Override
+    public int getAbsoluteMinHeight() {
+        if(child == null) {
+            return super.getAbsoluteMinHeight();
+        }
+        return child.getAbsoluteMinHeight();
+    }
+
+    @Override
+    public int getAbsoluteMinWidth() {
+        if(child == null) {
+            return super.getAbsoluteMinWidth();
+        }
+        return child.getAbsoluteMinWidth();
+    }
+
+    @Override
+    public boolean hasComplexLayout() {
+        if(child == null) {
+            return super.hasComplexLayout();
+        }
+        return child.hasComplexLayout();
     }
 
     @Override

@@ -49,11 +49,11 @@ public class BasicWidgetRenderer {
                 if (size != null) {
                     screen.clear();
                     WidgetErrorRecorder errorRecorder = new BasicWidgetErrorRecorder();
-                    if (widgetToRender.getMinWidth() > size.getColumns()) {
-                        errorRecorder.terminalToSlim(widgetToRender.getMinWidth() - size.getColumns());
+                    if (widgetToRender.getMinWidth(size.getRows()) > size.getColumns()) {
+                        errorRecorder.terminalToSlim(widgetToRender.getMinWidth(size.getRows()) - size.getColumns());
                     }
-                    if (widgetToRender.getMinHeight() > size.getRows()) {
-                        errorRecorder.terminalToLow(widgetToRender.getMinHeight() - size.getRows());
+                    if (widgetToRender.getMinHeight(size.getColumns()) > size.getRows()) {
+                        errorRecorder.terminalToLow(widgetToRender.getMinHeight(size.getColumns()) - size.getRows());
                     }
                     if (errorRecorder.getAllErrors().isEmpty()) {
                         widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);

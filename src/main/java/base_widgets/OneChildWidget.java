@@ -11,13 +11,13 @@ public abstract class OneChildWidget extends Widget {
     }
 
     @Override
-    public int getMinHeight() {
-        return child.getMinHeight();
+    public int getMinHeight(int availableWidth) {
+        return child.getMinHeight(availableWidth);
     }
 
     @Override
-    public int getMinWidth() {
-        return child.getMinWidth();
+    public int getMinWidth(int availableHeight) {
+        return child.getMinWidth(availableHeight);
     }
 
     @Override
@@ -28,6 +28,21 @@ public abstract class OneChildWidget extends Widget {
     @Override
     public int getMaxWidth(int maxWidth, int maxHeight) {
         return child.getMaxWidth(maxWidth, maxHeight);
+    }
+
+    @Override
+    public int getAbsoluteMinHeight() {
+        return child.getAbsoluteMinHeight();
+    }
+
+    @Override
+    public int getAbsoluteMinWidth() {
+        return child.getAbsoluteMinWidth();
+    }
+
+    @Override
+    public boolean hasComplexLayout() {
+        return child.hasComplexLayout();
     }
 
     @Override

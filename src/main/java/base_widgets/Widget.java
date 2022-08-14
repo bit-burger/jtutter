@@ -50,7 +50,14 @@ public abstract class Widget {
      * @see Widget#safeRender(int, int, int, int, Screen, WidgetErrorRecorder) for an alterntive,
      * that does not care about a width or height that is too big.
      */
-    public abstract void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder);
+    public abstract void rawRender(
+            int x,
+            int y,
+            int width,
+            int height,
+            Screen screen,
+            WidgetErrorRecorder errorRecorder
+    );
 
     /**
      * Calls {@link Widget#rawRender(int, int, int, int, Screen, WidgetErrorRecorder)},
@@ -60,17 +67,26 @@ public abstract class Widget {
      * which is the limit for a Widget to render in.
      * The method will simply resize the boundaries to the top left corner, if the boundaries are too big.
      */
-    public final void safeRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+    public final void safeRender(
+            int x,
+            int y,
+            int width,
+            int height,
+            Screen screen,
+            WidgetErrorRecorder errorRecorder
+    ) {
         int maxWidth = getMaxWidth(width, height);
         int maxHeight = getMaxHeight(width, height);
-        if(maxWidth < width) {
+        if (maxWidth < width) {
             width = maxWidth;
         }
-        if(maxHeight < height) {
+        if (maxHeight < height) {
             height = maxHeight;
         }
         rawRender(x, y, width, height, screen, errorRecorder);
     }
+
+    // do not override getMinWidth or getMinHeight, if hasComplexLayout is false
 
     /**
      * Returns the minimum width the Widget needs to render.
@@ -83,8 +99,8 @@ public abstract class Widget {
      * @apiNote If the renderer finds the widget does not have enough space,
      * the renderer should display something else, such as an error instead of rendering the widget.
      */
-    public int getMinWidth() {
-        return 0;
+    public int getMinWidth(int availableHeight) {
+        return getAbsoluteMinWidth();
     }
 
     /**
@@ -98,7 +114,22 @@ public abstract class Widget {
      * @apiNote If the renderer finds the widget does not have enough space,
      * the renderer should display something else, such as an error instead of rendering the widget.
      */
-    public int getMinHeight() {
+    public int getMinHeight(int availableWidth) {
+        return getAbsoluteMinHeight();
+    }
+
+    /**
+     * If true, getAbsoluteMinWidth is only applicable, if the height is infinity, and vice versa.
+     */
+    public boolean hasComplexLayout() {
+        return false;
+    }
+
+    public int getAbsoluteMinWidth() {
+        return 0;
+    }
+
+    public int getAbsoluteMinHeight() {
         return 0;
     }
 

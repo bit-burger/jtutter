@@ -67,7 +67,7 @@ public class Column extends Widget {
                     flex = 1;
                     usesFlex = true;
                 } else {
-                    int childMinHeight = child.getMinHeight();
+                    int childMinHeight = child.getMinHeight(0);// TODO;
                     assert childMinHeight > 0 : "min height of child " + child + " cannot be 0, if no flex is used";
                     allWidgetsMinHeight += childMinHeight;
                 }
@@ -119,7 +119,7 @@ public class Column extends Widget {
             double childHeightCeil = Math.ceil(childHeight);
             double childHeightFloor = Math.floor(childHeight);
             if (childHeightCeil > childHeight) {
-                double roundUp = childHeight - Math.floor(childHeight);
+                double roundUp = childHeight - childHeightFloor;
                 roundUps.add(roundUp);
             }
             numberOfAllowedRoundUps -= childHeightFloor;
@@ -136,7 +136,7 @@ public class Column extends Widget {
             int childUsedHeight;
             int childRealHeight;
             if (flexValues[i] == 0) {
-                childUsedHeight = child.getMinHeight();
+                childUsedHeight = child.getMinHeight(width);
                 childRealHeight = childUsedHeight;
             } else {
                 double rawChildHeight = remainingHeightForFlex * (flexValues[i] / allWidgetsFlex);
@@ -160,7 +160,7 @@ public class Column extends Widget {
             case end -> y += height - allWidgetsMinHeight;
         }
         for (Widget child : children) {
-            int childHeight = child.getMinHeight();
+            int childHeight = child.getMinHeight(width);
             renderChild(child, x, y, width, childHeight, screen, errorRecorder);
             y += childHeight;
         }
@@ -182,10 +182,10 @@ public class Column extends Widget {
     }
 
     @Override
-    public int getMinWidth() {
+    public int getMinWidth(int availableHeight) {
         int minWidth = 0;
         for (Widget child : children) {
-            int childMinWidth = child.getMinWidth();
+            int childMinWidth = child.getAbsoluteMinWidth();
             if (minWidth < childMinWidth) {
                 minWidth = childMinWidth;
             }
@@ -194,14 +194,14 @@ public class Column extends Widget {
     }
 
     @Override
-    public int getMinHeight() {
+    public int getMinHeight(int availableWidth) {
         if (!usesFlex) {
             return allWidgetsMinHeight;
         }
         // TODO: does not use same method as renderer
         int minHeight = 0;
         for (int i = 0; i < children.length; i++) {
-            int childMinHeight = children[i].getMinHeight();
+            int childMinHeight = children[i].getMinHeight(availableWidth);
             final double flex = flexValues[i];
             if (flex != 0) {
                 final double flexPercentage = flex / allWidgetsFlex;

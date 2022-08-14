@@ -11,9 +11,9 @@ public class MinSizeBox extends OneChildWidget {
      * Specify min height and/or min width for a child widget.
      *
      * @param minWidth  How much width this widget should min. have, should be at least 0,
-     *                  if it is smaller than the child's {@link Widget#getMinWidth()}, that will be used instead.
+     *                  if it is smaller than the child's {@link Widget#getMinWidth(int)}, that will be used instead.
      * @param minHeight How much height this widget should min. have, should be at least 0,
-     *                  if it is smaller than the child's {@link Widget#getMinHeight()}, that will be used instead.
+     *                  if it is smaller than the child's {@link Widget#getMinHeight(int)}, that will be used instead.
      * @param child     The child, that will not be rendered smaller than minWidth or minHeight.
      */
     public MinSizeBox(int minWidth, int minHeight, Widget child) {
@@ -35,12 +35,36 @@ public class MinSizeBox extends OneChildWidget {
     }
 
     @Override
-    public int getMinWidth() {
-        return Math.max(minWidth, child.getMinWidth());
+    public int getMinWidth(int availableHeight) {
+        return Math.max(minWidth, super.getMinWidth(availableHeight));
     }
 
     @Override
-    public int getMinHeight() {
-        return Math.max(minHeight, child.getMinWidth());
+    public int getMinHeight(int availableWidth) {
+        return Math.max(minHeight, super.getMinHeight(availableWidth));
+    }
+
+    @Override
+    public boolean hasComplexLayout() {
+        if(minHeight != 0 && minWidth != 0) {
+            return false;
+        }
+        return super.hasComplexLayout();
+    }
+
+    @Override
+    public int getAbsoluteMinWidth() {
+        if(minWidth != 0) {
+            return minWidth;
+        }
+        return super.getAbsoluteMinWidth();
+    }
+
+    @Override
+    public int getAbsoluteMinHeight() {
+        if(minHeight != 0) {
+            return minHeight;
+        }
+        return super.getAbsoluteMinHeight();
     }
 }

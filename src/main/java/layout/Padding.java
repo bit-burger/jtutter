@@ -29,13 +29,23 @@ public final class Padding extends OptionalChildWidget {
     }
 
     @Override
-    public int getMinHeight() {
-        return top + bottom + super.getMinHeight();
+    public int getMinHeight(int availableWidth) {
+        return top + bottom + super.getMinHeight(availableWidth);
     }
 
     @Override
-    public int getMinWidth() {
-        return left + right + super.getMinWidth();
+    public int getMinWidth(int availableHeight) {
+        return left + right + super.getMinWidth(availableHeight);
+    }
+
+    @Override
+    public int getAbsoluteMinWidth() {
+        return left + right + super.getAbsoluteMinWidth();
+    }
+
+    @Override
+    public int getAbsoluteMinHeight() {
+        return top + bottom + super.getAbsoluteMinHeight();
     }
 
     @Override

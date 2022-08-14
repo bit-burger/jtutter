@@ -28,10 +28,10 @@ public class MaxSizeBox extends OptionalChildWidget {
         super(child);
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
-        if (child != null) {
-            assert maxWidth == 0 || maxWidth >= child.getMinWidth() : "Max width should not be less than the child minimum width";
-            assert maxHeight == 0 || maxHeight >= child.getMinHeight() : "Max width should not be less than the child minimum width";
-        }
+//        if (child != null) {
+//            assert maxWidth == 0 || maxWidth >= child.getMinWidth() : "Max width should not be less than the child minimum width";
+//            assert maxHeight == 0 || maxHeight >= child.getMinHeight() : "Max width should not be less than the child minimum width";
+//        }
     }
 
     public static MaxSizeBox square(int size) {
