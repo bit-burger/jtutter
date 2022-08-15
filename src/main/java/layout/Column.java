@@ -62,8 +62,8 @@ public class Column extends Widget {
                     flex = 1;
                     usesFlex = true;
                 } else {
-                    assert child.getAbsoluteMinHeight() > 0 :
-                            "absolute min height of child " + child + " cannot be " + "0, if no flex " + "is used";
+                    assert getChildAbsoluteMinHeight(child) > 0 : "absolute min height of child " + child + " cannot " +
+                            "be 0, if no flex is used";
                 }
             }
             allWidgetsFlex += flex;
@@ -73,6 +73,25 @@ public class Column extends Widget {
         this.allWidgetsFlex = allWidgetsFlex;
     }
 
+    protected int getChildAbsoluteMinHeight(Widget child) {
+        return child.getAbsoluteMinHeight();
+    }
+
+    protected int getChildMinHeight(Widget child, int availableWidth) {
+        return child.getMinHeight(availableWidth);
+    }
+
+    protected int getChildMinWidth(Widget child, int availableHeight) {
+        return child.getMinWidth(availableHeight);
+    }
+
+    protected int getChildMaxWidth(Widget child, int availableWidth, int availableHeight) {
+        return child.getMaxWidth(availableWidth, availableHeight);
+    }
+
+    protected int getChildMaxHeight(Widget child, int availableWidth, int availableHeight) {
+        return child.getMaxHeight(availableWidth, availableHeight);
+    }
 
     /**
      * Column is as high as getAllWidgetsMinHeight, except if usesFlex is true, then column is as high as possible.
@@ -80,7 +99,7 @@ public class Column extends Widget {
     private int getAllWidgetsMinHeight(int availableWidth) {
         int allWidgetsMinHeight = 0;
         for (Widget child : children) {
-            allWidgetsMinHeight += child.getMinHeight(availableWidth);
+            allWidgetsMinHeight += getChildMinHeight(child, availableWidth);
         }
         return allWidgetsMinHeight;
     }
@@ -104,13 +123,13 @@ public class Column extends Widget {
             WidgetErrorRecorder errorRecorder
     ) {
         if (child.hasComplexLayout()) {
-            int childMinWidth = child.getMinWidth(childHeight);
+            int childMinWidth = getChildMinWidth(child, childHeight);
             if (childMinWidth > availableWidth) {
                 errorRecorder.terminalToSlim(childMinWidth - availableWidth);
                 return;
             }
         }
-        int childMaxWidth = child.getMaxWidth(availableWidth, childHeight);
+        int childMaxWidth = getChildMaxWidth(child, availableWidth, childHeight);
         if (childMaxWidth >= availableWidth) {
             child.rawRender(x, y, availableWidth, childHeight, screen, errorRecorder);
         } else {
@@ -148,7 +167,7 @@ public class Column extends Widget {
             int childUsedHeight;
             int childRealHeight;
             if (flexValues[i] == 0) {
-                childUsedHeight = child.getMinHeight(width);
+                childUsedHeight = getChildMinHeight(child, width);
                 childRealHeight = childUsedHeight;
             } else {
                 double rawChildHeight = remainingHeightForFlex * (flexValues[i] / allWidgetsFlex);
@@ -159,7 +178,7 @@ public class Column extends Widget {
                 } else {
                     childUsedHeight = (int) Math.floor(rawChildHeight);
                 }
-                childRealHeight = child.getMaxHeight(width, childUsedHeight);
+                childRealHeight = getChildMaxHeight(child, width, childUsedHeight);
             }
             renderChild(child, x, y, width, childRealHeight, screen, errorRecorder);
             y += childUsedHeight;
@@ -173,7 +192,7 @@ public class Column extends Widget {
             case end -> y += height - allWidgetsMinHeight;
         }
         for (Widget child : children) {
-            int childHeight = child.getMinHeight(width);
+            int childHeight = getChildMinHeight(child, width);
             renderChild(child, x, y, width, childHeight, screen, errorRecorder);
             y += childHeight;
         }
@@ -186,7 +205,7 @@ public class Column extends Widget {
         }
         int maxWidth = 0;
         for (Widget child : children) {
-            int childMaxWidth = child.getMaxWidth(maxAvailableWidth, maxAvailableHeight);
+            int childMaxWidth = getChildMaxWidth(child, maxAvailableWidth, maxAvailableHeight);
             if (maxWidth < childMaxWidth) {
                 maxWidth = childMaxWidth;
             }
@@ -198,7 +217,8 @@ public class Column extends Widget {
     public int getMinWidth(int availableHeight) {
         int minWidth = 0;
         for (Widget child : children) {
-            int childMinWidth = child.getAbsoluteMinWidth(); // use absolute min width, and give error in rendering,
+            int childMinWidth = getChildAbsoluteMinHeight(child); // use absolute min width, and give error in
+            // rendering,
             // if not enough width
             if (minWidth < childMinWidth) {
                 minWidth = childMinWidth;
@@ -216,7 +236,7 @@ public class Column extends Widget {
         // TODO: does not use same method as renderer
         int minHeight = 0;
         for (int i = 0; i < children.length; i++) {
-            int childMinHeight = children[i].getMinHeight(availableWidth);
+            int childMinHeight = getChildMinHeight(children[i], availableWidth);
             final double flex = flexValues[i];
             if (flex != 0) {
                 final double flexPercentage = flex / allWidgetsFlex;
