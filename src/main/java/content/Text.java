@@ -3,6 +3,7 @@ package content;
 import base_widgets.Widget;
 import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 
 public class Text extends Widget {
@@ -118,7 +119,6 @@ public class Text extends Widget {
     }
 
     private int getMinHeightWordWrapping(int availableWidth) {
-        // TODO: will give 1 back if availableWidth is smaller than longest word (give as mistake in render maybe????)
         int lineCount = 1;
         boolean newLine = true;
         int currentLineCharacters = 0;
@@ -127,12 +127,9 @@ public class Text extends Widget {
                 continue;
             }
             if (token.equals("\n")) {
-                // TODO: multiple \n after eachother will have no effect, but in rendering? (possibly closed)
-                if (currentLineCharacters < availableWidth) {
-                    newLine = true;
-                    currentLineCharacters = 0;
-                    lineCount++;
-                }
+                newLine = true;
+                currentLineCharacters = 0;
+                lineCount++;
                 continue;
             }
             newLine = false;
@@ -196,7 +193,7 @@ public class Text extends Widget {
 
     @Override
     public int getMaxWidth(int maxAvailableWidth, int maxAvailableHeight) {
-        if(!style.isShrinkWidth()) {
+        if (!style.isShrinkWidth()) {
             return maxAvailableWidth;
         }
         if (style.getWrappingBehavior() == TextWrappingBehavior.characters) {
@@ -239,7 +236,20 @@ public class Text extends Widget {
     }
 
     private void renderChar(int x, int y, char c, Screen screen) {
-        screen.setCharacter(x, y, new TextCharacter(c, style.getColor(), style.getBackgroundColor()));
+        TextColor backgroundColor = style.getBackgroundColor();
+        TextColor foregroundColor = style.getColor();
+        if (backgroundColor == null || foregroundColor == null) {
+            TextCharacter character = screen.getBackCharacter(x, y);
+            if (character != null) {
+                if (backgroundColor == null) {
+                    backgroundColor = character.getBackgroundColor();
+                }
+                if (foregroundColor == null) {
+                    foregroundColor = character.getForegroundColor();
+                }
+            }
+        }
+        screen.setCharacter(x, y, new TextCharacter(c, foregroundColor, backgroundColor));
     }
 
     private void renderCharacterWrapLine(
@@ -262,7 +272,7 @@ public class Text extends Widget {
     private void renderCharacterWrap(int x, int y, int width, Screen screen) {
         int currentLine = 0;
         for (String token : wrappingTokens) {
-            if(token.isEmpty()) {
+            if (token.isEmpty()) {
                 currentLine++;
                 continue;
             }
