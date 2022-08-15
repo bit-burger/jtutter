@@ -9,6 +9,7 @@ public final class TextStyle {
     private BasicAlignment textAlign;
     private TextColor color;
     private TextColor backgroundColor;
+    private boolean shrinkWidth;
 
     public TextStyle(
     ) {
@@ -34,19 +35,32 @@ public final class TextStyle {
         return backgroundColor;
     }
 
-    public void setWrappingBehavior(TextWrappingBehavior wrappingBehavior) {
+    public boolean isShrinkWidth() {
+        return shrinkWidth;
+    }
+
+    public TextStyle setWrappingBehavior(TextWrappingBehavior wrappingBehavior) {
         this.wrappingBehavior = wrappingBehavior;
+        return this;
     }
 
-    public void setTextAlign(BasicAlignment textAlign) {
+    public TextStyle setTextAlign(BasicAlignment textAlign) {
         this.textAlign = textAlign;
+        return this;
     }
 
-    public void setColor(TextColor color) {
+    public TextStyle setColor(TextColor color) {
         this.color = color;
+        return this;
     }
 
-    public void setBackgroundColor(TextColor backgroundColor) {
+    public TextStyle setBackgroundColor(TextColor backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
+    }
+
+    public TextStyle shrinkWidth() {
+        this.shrinkWidth = true;
+        return this;
     }
 }

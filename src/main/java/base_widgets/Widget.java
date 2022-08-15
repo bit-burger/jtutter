@@ -11,26 +11,26 @@ import net.jcip.annotations.Immutable;
  * the Widget renders itself on a {@link Screen} in the given boundaries.
  * The boundaries should not be bigger sized than
  * {@link Widget#getMaxWidth(int, int)} and {@link Widget#getMaxHeight(int, int)} and not smaller than
- * {@link Widget#getMinHeight()} and {@link Widget#getMinHeight()}.
+ * {@link Widget#getMinHeight(int)} and {@link Widget#getMinHeight(int)}.
  * </p>
  * <p>
  * Alternatively use the the {@link Widget#safeRender(int, int, int, int, Screen, WidgetErrorRecorder)} method,
  * to automatically size the boundaries appropriately, if they become too big.
  * It still cannot change anything, if the boundaries are too small.
  * This means that before rendering a Widget, the renderer should always first check
- * {@link Widget#getMinHeight()} and {@link Widget#getMinHeight()}.
+ * {@link Widget#getMinHeight(int)} and {@link Widget#getMinHeight(int)}.
  * </p>
  * <p>
  * As many Widgets will use other widgets as their children to render on top of them,
  * they can use {@link Widget#getMaxWidth(int, int)}, {@link Widget#getMaxHeight(int, int)},
- * {@link Widget#getMinWidth()}, and {@link Widget#getMinHeight()} from their child widget,
+ * {@link Widget#getMinWidth(int)}, and {@link Widget#getMinHeight(int)} from their child widget,
  * to decide how much space their child widget is allowed to render in. They should not however,
- * render their child using only {@link Widget#getMinWidth()} and {@link Widget#getMinHeight()},
+ * render their child using only {@link Widget#getMinWidth(int)} and {@link Widget#getMinHeight(int)},
  * as some layout widgets will not work then.
  * </p>
  * <p>
  * If a Widget features another Widget as its child,
- * it should also make sure that {@link Widget#getMinWidth()} and {@link Widget#getMinHeight()},
+ * it should also make sure that {@link Widget#getMinWidth(int)} and {@link Widget#getMinHeight(int)},
  * leave enough space for their child and additional width and height possibly caused by the widget.
  * See {@link Padding} for an example, as more padding, decreases the usable space for the child widget.
  * </p>
@@ -42,7 +42,7 @@ public abstract class Widget {
      * <p>
      * Never give bigger width or height than {@link Widget#getMaxWidth(int, int)}
      * and {@link Widget#getMaxHeight(int, int)}, as well as never give smaller width or height than
-     * {@link Widget#getMinWidth()} and {@link Widget#getMinHeight()}.
+     * {@link Widget#getMinWidth(int)} and {@link Widget#getMinHeight(int)}.
      * </p>
      *
      * @param screen The {@link Screen} on which to render, only render in the boundaries defined by x, y, width, and
@@ -125,10 +125,16 @@ public abstract class Widget {
         return false;
     }
 
+    /**
+     * {@link Widget#getMinHeight(int)} should never be called with a width smaller than this
+     */
     public int getAbsoluteMinWidth() {
         return 0;
     }
 
+    /**
+     * {@link Widget#getMinWidth(int)} should never be called with a height smaller than this
+     */
     public int getAbsoluteMinHeight() {
         return 0;
     }

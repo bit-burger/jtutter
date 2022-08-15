@@ -2,12 +2,11 @@ package content;
 
 import base_widgets.Widget;
 import base_widgets.WidgetErrorRecorder;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.screen.Screen;
 
 public class Text extends Widget {
     static private final TextStyle defaultTextStyle = new TextStyle();
-    static private final String linebreak = "\n";
-    static private final String space = " ";
 
     static private boolean stringContainsAtLeastOneNonWhiteSpaceCharacter(String s) {
         for (int i = 0; i < s.length(); i++) {
@@ -58,6 +57,7 @@ public class Text extends Widget {
                 currentNonLinebreakTokenBegin = i + 1;
             }
         }
+        wrappingTokens[currentWrappingTokenIndex] = data.substring(currentNonLinebreakTokenBegin);
         return wrappingTokens;
     }
 
@@ -127,8 +127,10 @@ public class Text extends Widget {
                 continue;
             }
             if (token.equals("\n")) {
+                // TODO: multiple \n after eachother will have no effect, but in rendering? (possibly closed)
                 if (currentLineCharacters < availableWidth) {
                     newLine = true;
+                    currentLineCharacters = 0;
                     lineCount++;
                 }
                 continue;
@@ -155,6 +157,7 @@ public class Text extends Widget {
     public int getMinWidth(int availableHeight) {
         // TODO: replace inefficient algorithm (by giving better base width fe)
         int width = getAbsoluteMinWidth();
+
         while (true) {
             if (getMinHeight(width) <= availableHeight) {
                 return width;
@@ -193,6 +196,9 @@ public class Text extends Widget {
 
     @Override
     public int getMaxWidth(int maxAvailableWidth, int maxAvailableHeight) {
+        if(!style.isShrinkWidth()) {
+            return maxAvailableWidth;
+        }
         if (style.getWrappingBehavior() == TextWrappingBehavior.characters) {
             int maxTokenLength = 0;
             for (String token : wrappingTokens) {
@@ -204,7 +210,7 @@ public class Text extends Widget {
         int currentLineLength = 0;
         int currentLineLengthWithEndSpaces = 0;
         for (String token : wrappingTokens) {
-            switch(token) {
+            switch (token) {
                 case " ":
                     if (currentLineLengthWithEndSpaces > 0) {
                         currentLineLengthWithEndSpaces++;
@@ -232,9 +238,150 @@ public class Text extends Widget {
         return getMinHeight(maxAvailableWidth);
     }
 
+    private void renderChar(int x, int y, char c, Screen screen) {
+        screen.setCharacter(x, y, new TextCharacter(c, style.getColor(), style.getBackgroundColor()));
+    }
+
+    private void renderCharacterWrapLine(
+            // tokenCharacterEnd is exclusive
+            int x, int y, int maxWidth, String token, int tokenCharacterBegin, int tokenCharacterEnd, Screen screen
+    ) {
+        int lineLength = tokenCharacterEnd - tokenCharacterBegin;
+        if (lineLength < maxWidth) {
+            switch (style.getTextAlign()) {
+                case center -> x += ((maxWidth - lineLength) / 2);
+                case end -> x += (maxWidth - lineLength);
+            }
+        }
+        for (int tokenCharacterIndex = tokenCharacterBegin; tokenCharacterIndex < tokenCharacterEnd; tokenCharacterIndex++) {
+            renderChar(x, y, token.charAt(tokenCharacterIndex), screen);
+            x++;
+        }
+    }
+
+    private void renderCharacterWrap(int x, int y, int width, Screen screen) {
+        int currentLine = 0;
+        for (String token : wrappingTokens) {
+            if(token.isEmpty()) {
+                currentLine++;
+                continue;
+            }
+            int lastRenderedCharacterIndex = 0; // exclusive
+            while (lastRenderedCharacterIndex < token.length()) {
+                int howManyCharactersToRender = Math.min(token.length() - lastRenderedCharacterIndex, width);
+                renderCharacterWrapLine(
+                        x,
+                        y + currentLine,
+                        width,
+                        token,
+                        lastRenderedCharacterIndex,
+                        lastRenderedCharacterIndex + howManyCharactersToRender,
+                        screen
+                );
+                lastRenderedCharacterIndex += howManyCharactersToRender;
+                currentLine++;
+            }
+        }
+    }
+
+    private void renderWordWrapLine(
+            // endTokenOfLine is exclusive
+            int x, int y, int lineLength, int maxWidth, int firstTokenOfLine, int endTokenOfLine, Screen screen
+    ) {
+        if (lineLength < maxWidth) {
+            switch (style.getTextAlign()) {
+                case center -> x += ((maxWidth - lineLength) / 2);
+                case end -> x += (maxWidth - lineLength);
+            }
+        }
+        for (int currentTokenIndex = firstTokenOfLine; currentTokenIndex < endTokenOfLine; currentTokenIndex++) {
+            String currentToken = wrappingTokens[currentTokenIndex];
+            for (int currentTokenCharIndex = 0; currentTokenCharIndex < currentToken.length(); currentTokenCharIndex++) {
+                renderChar(x, y, currentToken.charAt(currentTokenCharIndex), screen);
+                x++;
+            }
+        }
+    }
+
+    private void renderWordWrap(int x, int y, int width, Screen screen) {
+        int currentLine = 0;
+
+        int currentLineLength = 0;
+        int currentLineLengthWithEndSpaces = 0;
+
+        int currentLineFirstTokenIndex = 0;
+        int currentLineEndTokenIndex = 0;
+
+        boolean isInLine = false;
+        for (int tokenIndex = 0; tokenIndex < wrappingTokens.length; tokenIndex++) {
+            String token = wrappingTokens[tokenIndex];
+            switch (token) {
+                case " ":
+                    if (currentLineLengthWithEndSpaces > 0) {
+                        currentLineLengthWithEndSpaces++;
+                    }
+                    break;
+                default:
+                    isInLine = true;
+                    if (token.length() + currentLineLengthWithEndSpaces > width) {
+                        renderWordWrapLine(
+                                x,
+                                y + currentLine,
+                                currentLineLength,
+                                width,
+                                currentLineFirstTokenIndex,
+                                currentLineEndTokenIndex,
+                                screen
+                        );
+                        currentLineFirstTokenIndex = tokenIndex;
+                        currentLineLengthWithEndSpaces = 0;
+                        currentLine++;
+                    }
+                    currentLineEndTokenIndex = tokenIndex + 1;
+                    currentLineLengthWithEndSpaces += token.length();
+                    currentLineLength = currentLineLengthWithEndSpaces;
+                    break;
+                case "\n":
+                    if (isInLine) {
+                        renderWordWrapLine(
+                                x,
+                                y + currentLine,
+                                currentLineLength,
+                                width,
+                                currentLineFirstTokenIndex,
+                                currentLineEndTokenIndex,
+                                screen
+                        );
+                    }
+                    isInLine = false;
+                    currentLine++;
+                    currentLineLength = 0;
+                    currentLineLengthWithEndSpaces = 0;
+                    currentLineFirstTokenIndex = tokenIndex + 1;
+                    currentLineEndTokenIndex = tokenIndex + 2;
+            }
+        }
+        if (isInLine) {
+            renderWordWrapLine(
+                    x,
+                    y + currentLine,
+                    currentLineLength,
+                    width,
+                    currentLineFirstTokenIndex,
+                    currentLineEndTokenIndex,
+                    screen
+            );
+        }
+    }
+
     @Override
     public void rawRender(
             int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder
     ) {
+        if (style.getWrappingBehavior() == TextWrappingBehavior.characters) {
+            renderCharacterWrap(x, y, width, screen);
+        } else {
+            renderWordWrap(x, y, width, screen);
+        }
     }
 }

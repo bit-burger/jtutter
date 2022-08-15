@@ -10,6 +10,7 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.WrapBehaviour;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import base_widgets.Widget;
+import com.googlecode.lanterna.terminal.swing.AWTTerminalFontConfiguration;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,11 +50,20 @@ public class BasicWidgetRenderer {
                 if (size != null) {
                     screen.clear();
                     WidgetErrorRecorder errorRecorder = new BasicWidgetErrorRecorder();
-                    if (widgetToRender.getMinWidth(size.getRows()) > size.getColumns()) {
-                        errorRecorder.terminalToSlim(widgetToRender.getMinWidth(size.getRows()) - size.getColumns());
+
+                    int availableWidth = size.getColumns();
+                    int availableHeight = size.getRows();
+
+                    int absoluteMinWidth = widgetToRender.getAbsoluteMinWidth();
+                    int absoluteMinHeight = widgetToRender.getAbsoluteMinHeight();
+
+                    int minHeight = widgetToRender.getMinHeight(Math.max(availableWidth, absoluteMinWidth));
+                    if (minHeight > availableHeight) {
+                        errorRecorder.terminalToLow(minHeight - availableHeight);
                     }
-                    if (widgetToRender.getMinHeight(size.getColumns()) > size.getRows()) {
-                        errorRecorder.terminalToLow(widgetToRender.getMinHeight(size.getColumns()) - size.getRows());
+                    int minWidth = widgetToRender.getMinWidth(Math.max(availableHeight, absoluteMinHeight));
+                    if (minWidth > availableWidth) {
+                        errorRecorder.terminalToSlim(minWidth - availableWidth);
                     }
                     if (errorRecorder.getAllErrors().isEmpty()) {
                         widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);

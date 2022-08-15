@@ -34,9 +34,24 @@ public class BasicFlexWidget extends OptionalChildWidget implements FlexWidget {
         return new BasicFlexWidget(flex);
     }
 
-
     static BasicFlexWidget spacer() {
         return spacerBasicFlexWidget;
+    }
+
+    @Override
+    public int getMaxWidth(int maxWidth, int maxHeight) {
+        if (child != null) {
+            return child.getMaxWidth(maxWidth, maxHeight);
+        }
+        return 0;
+    }
+
+    @Override
+    public int getMaxHeight(int maxWidth, int maxHeight) {
+        if (child != null) {
+            return child.getMaxHeight(maxWidth, maxHeight);
+        }
+        return 0;
     }
 
     @Override
