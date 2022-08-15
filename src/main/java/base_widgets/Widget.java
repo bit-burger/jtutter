@@ -51,12 +51,7 @@ public abstract class Widget {
      * that does not care about a width or height that is too big.
      */
     public abstract void rawRender(
-            int x,
-            int y,
-            int width,
-            int height,
-            Screen screen,
-            WidgetErrorRecorder errorRecorder
+            int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder
     );
 
     /**
@@ -68,12 +63,7 @@ public abstract class Widget {
      * The method will simply resize the boundaries to the top left corner, if the boundaries are too big.
      */
     public final void safeRender(
-            int x,
-            int y,
-            int width,
-            int height,
-            Screen screen,
-            WidgetErrorRecorder errorRecorder
+            int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder
     ) {
         int maxWidth = getMaxWidth(width, height);
         int maxHeight = getMaxHeight(width, height);
@@ -120,6 +110,9 @@ public abstract class Widget {
 
     /**
      * If true, getAbsoluteMinWidth is only applicable, if the height is infinity, and vice versa.
+     * <p>
+     * hasComplexLayout should also be true if the absolute min width and height
+     * are not the same as the standard min width and height
      */
     public boolean hasComplexLayout() {
         return false;

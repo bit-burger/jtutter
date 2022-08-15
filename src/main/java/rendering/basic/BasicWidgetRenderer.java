@@ -57,14 +57,16 @@ public class BasicWidgetRenderer {
                     int absoluteMinWidth = widgetToRender.getAbsoluteMinWidth();
                     int absoluteMinHeight = widgetToRender.getAbsoluteMinHeight();
 
-                    int minHeight = widgetToRender.getMinHeight(Math.max(availableWidth, absoluteMinWidth));
-                    if (minHeight > availableHeight) {
-                        errorRecorder.terminalToLow(minHeight - availableHeight);
-                    }
                     int minWidth = widgetToRender.getMinWidth(Math.max(availableHeight, absoluteMinHeight));
                     if (minWidth > availableWidth) {
                         errorRecorder.terminalToSlim(minWidth - availableWidth);
                     }
+
+                    int minHeight = widgetToRender.getMinHeight(Math.max(availableWidth, absoluteMinWidth));
+                    if (minHeight > availableHeight) {
+                        errorRecorder.terminalToLow(minHeight - availableHeight);
+                    }
+
                     if (errorRecorder.getAllErrors().isEmpty()) {
                         widgetToRender.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);
                     }
