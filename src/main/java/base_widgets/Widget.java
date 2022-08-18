@@ -62,7 +62,7 @@ public abstract class Widget {
      * which is the limit for a Widget to render in.
      * The method will simply resize the boundaries to the top left corner, if the boundaries are too big.
      */
-    public final void safeRender(
+    public void safeRender(
             int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder
     ) {
         int maxWidth = getMaxWidth(width, height);
@@ -156,5 +156,27 @@ public abstract class Widget {
      */
     public int getMaxHeight(int maxAvailableWidth, int maxAvailableHeight) {
         return maxAvailableHeight;
+    }
+
+    /**
+     * Will be called by some renderers if inserted into a tree with a context.
+     * <p>
+     * Widgets working with the Context, should not be inserted multiple times.
+     */
+    public void insertIntoWidgetTree(WidgetContext c) {
+    }
+
+    /**
+     * Will be called by the same renderers as in {@link Widget#insertIntoWidgetTree(WidgetContext)},
+     * except if the current widget is not top level
+     */
+    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
+    }
+
+    /**
+     * Will be called by the same renderers as in {@link Widget#insertIntoWidgetTree(WidgetContext)},
+     * when the widget is taken out of the widget tree
+     */
+    public void takeOutOfWidgetTree() {
     }
 }

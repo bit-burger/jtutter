@@ -1,5 +1,7 @@
 package layout;
 
+import base_widgets.RerenderParent;
+import base_widgets.WidgetContext;
 import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.screen.Screen;
 import base_widgets.Widget;
@@ -113,7 +115,7 @@ public class Column extends Widget {
         }
     }
 
-    private void renderChild(
+    protected void renderChild(
             Widget child,
             int x,
             int y,
@@ -141,7 +143,7 @@ public class Column extends Widget {
         }
     }
 
-    private void flexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+    protected void flexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         int remainingHeightForFlex = height - getAllWidgetsMinHeight(width);
         int numberOfAllowedRoundUps = remainingHeightForFlex;
         final List<Double> roundUps = new ArrayList<>();
@@ -185,7 +187,7 @@ public class Column extends Widget {
         }
     }
 
-    private void nonFlexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+    protected void nonFlexRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         int allWidgetsMinHeight = getAllWidgetsMinHeight(width);
         switch (mainAxisAlignment) {
             case center -> y += Math.floor((height - allWidgetsMinHeight) / 2.0);
@@ -255,5 +257,25 @@ public class Column extends Widget {
             return maxAvailableHeight;
         }
         return getAllWidgetsMinHeight(maxAvailableWidth);
+    }
+
+    @Override
+    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
+        for (Widget child : children) {
+            child.insertIntoWidgetTree(c, parent);
+        }
+    }
+    @Override
+    public void insertIntoWidgetTree(WidgetContext c) {
+        for (Widget child : children) {
+            child.insertIntoWidgetTree(c);
+        }
+    }
+
+    @Override
+    public void takeOutOfWidgetTree() {
+        for (Widget child : children) {
+            child.takeOutOfWidgetTree();
+        }
     }
 }

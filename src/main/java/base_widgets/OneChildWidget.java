@@ -49,4 +49,19 @@ public abstract class OneChildWidget extends Widget {
     public void rawRender(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
         child.rawRender(x, y, width, height, screen, errorRecorder);
     }
+
+    @Override
+    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
+        child.insertIntoWidgetTree(c, parent);
+    }
+
+    @Override
+    public void insertIntoWidgetTree(WidgetContext c){
+        child.insertIntoWidgetTree(c);
+    }
+
+    @Override
+    public void takeOutOfWidgetTree() {
+        child.takeOutOfWidgetTree();
+    }
 }

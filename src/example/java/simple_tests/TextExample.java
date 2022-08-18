@@ -1,3 +1,5 @@
+package simple_tests;
+
 import base_widgets.Widget;
 import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
