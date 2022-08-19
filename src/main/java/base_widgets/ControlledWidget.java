@@ -6,20 +6,21 @@ import java.io.IOException;
 import java.util.UUID;
 
 
-abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends Widget implements WidgetController.Listener<StateType> {
+abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends Widget {
 
     private final String id;
     //    private final boolean rerenderBackground;
-    WidgetControllerType controller;
+    private WidgetControllerType controller;
     Screen cachedScreen;
     WidgetContext cachedContextParent;
     private WidgetErrorRecorder cachedErrorRecorder;
     private RerenderParent cachedRerenderParent; // can be null
-    private boolean canRenderOnItsOwn = false;
     private int lastX = -1, lastY = -1, lastWidth = -1, lastHeight = -1;
     private boolean lastHasComplexLayout;
     private int lastAbsoluteMinWidth = -1, lastAbsoluteMinHeight = -1, lastMinWidth = -1, lastMinHeight = -1,
             lastMaxWidth = -1, lastMaxHeight = -1;
+    private boolean hasHadFirstRender = false;
+    private boolean stateHasUpdatedBeforeFirstRender = false;
 
     protected ControlledWidget(String id) {
         this.id = id;
@@ -27,6 +28,14 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
 
     protected ControlledWidget() {
         id = UUID.randomUUID().toString();
+    }
+
+    public StateType state() {
+        return controller.state();
+    }
+
+    public WidgetControllerType controller() {
+        return controller;
     }
 
     /**
@@ -61,16 +70,17 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
         }
     }
 
-    @Override
-    final public void update(StateType s) {
-        if (canRenderOnItsOwn) {
-            onStateUpdate(s);
+
+    private void update(StateType s) {
+        if (!hasHadFirstRender) {
+            stateHasUpdatedBeforeFirstRender = true;
+        } else {
+            beforeStateRender(s, false);
+            rerender();
         }
     }
 
-    abstract void onStateUpdate(StateType s);
-
-    abstract void beforeFirstRender();
+    abstract protected void beforeStateRender(StateType s, boolean isInitialRender);
 
     @Override
     final public void rawRender(
@@ -82,8 +92,11 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
         lastWidth = width;
         lastHeight = height;
         this.cachedScreen = screen;
-        if(!canRenderOnItsOwn) {
-            canRenderOnItsOwn = true;
+        if (!hasHadFirstRender) {
+            if(stateHasUpdatedBeforeFirstRender) {
+                beforeStateRender(controller.state(), false);
+            }
+            hasHadFirstRender = true;
         }
         render(x, y, width, height, errorRecorder);
     }
@@ -106,14 +119,13 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
         } else {
             controller = c.reinsertWidgetControllerInTree(id);
         }
-        controller.listen(this);
-        beforeFirstRender();
+        controller.listen(this::update);
+        beforeStateRender(controller.state(), true);
     }
-
 
     @Override
     public void takeOutOfWidgetTree() {
-        controller.stopListening(this);
+        controller.stopListening(this::update);
     }
 
     protected abstract WidgetControllerType createStateController();

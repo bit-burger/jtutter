@@ -4,7 +4,7 @@ import com.googlecode.lanterna.screen.Screen;
 
 import java.util.HashMap;
 
-public abstract class StatefulWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends ControlledWidget<StateType, WidgetControllerType> implements WidgetContext, RerenderParent {
+public abstract class StatefulWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends ControlledWidget<StateType, WidgetControllerType> implements WidgetContext {
     protected StatefulWidget(String id) {
         super(id);
     }
@@ -15,35 +15,22 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
     private HashMap<String, WidgetController<?>> oldChildWidgetControllers;
     private boolean rebuilding = false;
     private HashMap<String, WidgetController<?>> childWidgetControllers = new HashMap<>();
-
     private Widget currentWidgetTree;
 
     @Override
-    public void refresh() {
-        super.rerender();
-    }
-
-    @Override
-    protected void onStateUpdate(StateType s) {
-        oldChildWidgetControllers = childWidgetControllers;
-        childWidgetControllers = new HashMap<>();
-        currentWidgetTree.takeOutOfWidgetTree();
+    protected void beforeStateRender(StateType s, boolean isInitialRender) {
+        if(!isInitialRender) {
+            oldChildWidgetControllers = childWidgetControllers;
+            childWidgetControllers = new HashMap<>();
+            currentWidgetTree.takeOutOfWidgetTree();
+        }
         rebuilding = true;
-        currentWidgetTree = build(controller, s);
-        currentWidgetTree.insertIntoWidgetTree(this, this);
-        rebuilding = false;
-        refresh();
-    }
-
-    @Override
-    void beforeFirstRender() {
-        rebuilding = true;
-        currentWidgetTree = build(controller, controller.state());
-        currentWidgetTree.insertIntoWidgetTree(this, this);
+        currentWidgetTree = build(s);
+        currentWidgetTree.insertIntoWidgetTree(this, this::rerender);
         rebuilding = false;
     }
 
-    protected abstract Widget build(WidgetControllerType stateController, StateType state);
+    protected abstract Widget build(StateType state);
 
     @Override
     protected void render(int x, int y, int width, int height, WidgetErrorRecorder errorRecorder) {

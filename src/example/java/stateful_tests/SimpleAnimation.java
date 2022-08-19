@@ -20,6 +20,23 @@ public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.Text
     }
 
     public static class TextAnimationController extends WidgetController<String> {
+        static final String message = "this shit hard, this shit hard, this shit hard, this shit hard, this shit hard";
+        boolean up = true;
+
+        private void tick() {
+            if(up) {
+                newState(state() + message.charAt(state().length()));
+                if(state().length() == message.length()) {
+                    up = false;
+                }
+            } else {
+                newState(state().substring(0, state().length() - 1));
+                if(state().length() == 0) {
+                    up = true;
+                }
+            }
+        }
+
         @Override
         public void init() {
             newState("");
@@ -27,9 +44,9 @@ public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.Text
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    newState(state() + "0");
+                    tick();
                 }
-            }, 0, 5000);
+            }, 1, 10);
         }
     }
 
@@ -39,8 +56,7 @@ public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.Text
     }
 
     @Override
-    protected Widget build(TextAnimationController stateController, String state) {
-        System.out.println("state: '" + state + "'");
+    protected Widget build(String state) {
         return new ExpandingColoredBox(
                 TextColor.ANSI.BLUE,
                 new Text(state, new TextStyle().setWrappingBehavior(TextWrappingBehavior.characters))
