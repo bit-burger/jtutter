@@ -19,7 +19,7 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
 
     @Override
     protected void beforeStateRender(StateType s, boolean isInitialRender) {
-        if(!isInitialRender) {
+        if (!isInitialRender) {
             oldChildWidgetControllers = childWidgetControllers;
             childWidgetControllers = new HashMap<>();
             currentWidgetTree.takeOutOfWidgetTree();
@@ -90,7 +90,10 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
             String stateId
     ) {
         assert rebuilding : "can only insert, if in rebuilding";
-        _WidgetControllerType widgetController = (_WidgetControllerType) childWidgetControllers.get("stateId");
+        if(oldChildWidgetControllers == null) {
+            return false;
+        }
+        _WidgetControllerType widgetController = (_WidgetControllerType) oldChildWidgetControllers.get(stateId);
         return widgetController != null;
     }
 
@@ -99,7 +102,10 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
             String stateId
     ) {
         assert rebuilding : "can only insert, if in rebuilding";
-        _WidgetControllerType oldWidget = (_WidgetControllerType) oldChildWidgetControllers.get(stateId);
+        _WidgetControllerType oldWidget = null;
+        if (oldChildWidgetControllers != null) {
+            oldWidget = (_WidgetControllerType) oldChildWidgetControllers.get(stateId);
+        }
         if (oldWidget == null) {
             throw new IllegalStateException("Cannot reinsert state, if it does not exist");
         }

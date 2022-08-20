@@ -1,6 +1,6 @@
 package stateful_tests;
 
-import base_widgets.StatefulRenderer;
+import base_widgets.StatefulWidgetRenderer;
 import base_widgets.StatefulWidget;
 import base_widgets.Widget;
 import base_widgets.WidgetController;
@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.TextAnimationController> {
     public static void main(String[] args) throws IOException {
-        new StatefulRenderer(new SimpleAnimation()).run();
+        new StatefulWidgetRenderer(new SimpleAnimation()).run();
     }
 
     public static class TextAnimationController extends WidgetController<String> {
@@ -24,14 +24,14 @@ public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.Text
         boolean up = true;
 
         private void tick() {
-            if(up) {
+            if (up) {
                 newState(state() + message.charAt(state().length()));
-                if(state().length() == message.length()) {
+                if (state().length() == message.length()) {
                     up = false;
                 }
             } else {
                 newState(state().substring(0, state().length() - 1));
-                if(state().length() == 0) {
+                if (state().length() == 0) {
                     up = true;
                 }
             }
@@ -46,8 +46,16 @@ public class SimpleAnimation extends StatefulWidget<String, SimpleAnimation.Text
                 public void run() {
                     tick();
                 }
-            }, 1, 10);
+            }, 0, 11);
         }
+    }
+
+    public SimpleAnimation() {
+        super();
+    }
+
+    public SimpleAnimation(String id) {
+        super(id);
     }
 
     @Override

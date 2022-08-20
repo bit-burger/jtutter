@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 
-abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends Widget {
+abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends Widget implements WidgetController.Listener<StateType> {
 
     private final String id;
     //    private final boolean rerenderBackground;
@@ -71,7 +71,7 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
     }
 
 
-    private void update(StateType s) {
+    public void update(StateType s) {
         if (!hasHadFirstRender) {
             stateHasUpdatedBeforeFirstRender = true;
         } else {
@@ -93,7 +93,7 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
         lastHeight = height;
         this.cachedScreen = screen;
         if (!hasHadFirstRender) {
-            if(stateHasUpdatedBeforeFirstRender) {
+            if (stateHasUpdatedBeforeFirstRender) {
                 beforeStateRender(controller.state(), false);
             }
             hasHadFirstRender = true;
@@ -113,19 +113,19 @@ abstract class ControlledWidget<StateType, WidgetControllerType extends WidgetCo
     final public void insertIntoWidgetTree(WidgetContext c) {
         cachedScreen = c.getScreen();
         if (c.widgetControllerHasEverBeenRegistered(id)) {
+            controller = c.reinsertWidgetControllerInTree(id);
+        } else {
             controller = createStateController();
             controller.init();
             c.registerWidgetController(id, controller);
-        } else {
-            controller = c.reinsertWidgetControllerInTree(id);
         }
-        controller.listen(this::update);
         beforeStateRender(controller.state(), true);
+        controller.listen(this);
     }
 
     @Override
     public void takeOutOfWidgetTree() {
-        controller.stopListening(this::update);
+        controller.stopListening(this);
     }
 
     protected abstract WidgetControllerType createStateController();

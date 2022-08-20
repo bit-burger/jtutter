@@ -13,11 +13,11 @@ import rendering.basic.BasicWidgetErrorRecorder;
 import java.io.IOException;
 import java.util.List;
 
-public class StatefulRenderer implements WidgetContext {
+public class StatefulWidgetRenderer implements WidgetContext {
     private final StatefulWidget<?, ?> widgetToRun;
     private Screen screen;
 
-    public StatefulRenderer(StatefulWidget<?, ?> widgetToRun) {
+    public StatefulWidgetRenderer(StatefulWidget<?, ?> widgetToRun) {
         this.widgetToRun = widgetToRun;
     }
 
@@ -52,38 +52,20 @@ public class StatefulRenderer implements WidgetContext {
                 screen.clear();
                 WidgetErrorRecorder errorRecorder = new BasicWidgetErrorRecorder();
 
-                int availableWidth = size.getColumns();
-                int availableHeight = size.getRows();
-
-                int absoluteMinWidth = widgetToRun.getAbsoluteMinWidth();
-                int absoluteMinHeight = widgetToRun.getAbsoluteMinHeight();
-
-                int minWidth = widgetToRun.getMinWidth(Math.max(availableHeight, absoluteMinHeight));
-                if (minWidth > availableWidth) {
-                    errorRecorder.terminalToSlim(minWidth - availableWidth);
-                }
-
-                int minHeight = widgetToRun.getMinHeight(Math.max(availableWidth, absoluteMinWidth));
-                if (minHeight > availableHeight) {
-                    errorRecorder.terminalToLow(minHeight - availableHeight);
-                }
-
-                if (errorRecorder.getAllErrors().isEmpty()) {
-                    widgetToRun.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);
-                }
+                widgetToRun.safeRender(0, 0, size.getColumns(), size.getRows(), screen, errorRecorder);
                 List<String> errors = errorRecorder.getAllErrors();
                 if (!errors.isEmpty()) {
                     screen.clear();
                     writeErrorsOnScreen(errors, screen);
                 }
-                TextCharacter cursorCharacter = screen.getBackCharacter(0, 0);
-                screen.setCharacter(
-                        0,
-                        0,
-                        cursorCharacter
-                                .withBackgroundColor(cursorCharacter.getForegroundColor())
-                                .withForegroundColor(cursorCharacter.getBackgroundColor())
-                );
+//                TextCharacter cursorCharacter = screen.getBackCharacter(0, 0);
+//                screen.setCharacter(
+//                        0,
+//                        0,
+//                        cursorCharacter
+//                                .withBackgroundColor(cursorCharacter.getForegroundColor())
+//                                .withForegroundColor(cursorCharacter.getBackgroundColor())
+//                );
                 try {
                     screen.refresh();
                 } catch (IOException e) {
@@ -108,7 +90,7 @@ public class StatefulRenderer implements WidgetContext {
     public <StateType, WidgetControllerType extends WidgetController<StateType>> boolean widgetControllerHasEverBeenRegistered(
             String stateId
     ) {
-        return true;
+        return false;
     }
 
     @Override
