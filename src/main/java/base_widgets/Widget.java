@@ -168,15 +168,12 @@ public abstract class Widget {
 
     /**
      * Will be called by the same renderers as in {@link Widget#insertIntoWidgetTree(WidgetContext)},
-     * except if the current widget is not top level
-     */
-    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
-    }
-
-    /**
-     * Will be called by the same renderers as in {@link Widget#insertIntoWidgetTree(WidgetContext)},
      * when the widget is taken out of the widget tree
      */
     public void takeOutOfWidgetTree() {
+    }
+
+    public boolean shouldParentRerender(WidgetErrorRecorder errorRecorder) {
+        return false;
     }
 }

@@ -3,7 +3,7 @@ package stateful_tests;
 import base_widgets.StatefulWidget;
 import base_widgets.StatefulWidgetRenderer;
 import base_widgets.Widget;
-import base_widgets.WidgetController;
+import base_widgets.WidgetStateController;
 import com.googlecode.lanterna.TextColor;
 import content.ExpandingColoredBox;
 import layout.ColumnBuilder;
@@ -16,20 +16,24 @@ import java.util.TimerTask;
 
 public class NestedSimpleAnimation extends StatefulWidget<Integer, NestedSimpleAnimation.NumberAnimationController> {
     public static void main(String[] args) throws IOException {
-        new StatefulWidgetRenderer(new NestedSimpleAnimation()).run();
+        new StatefulWidgetRenderer(new NestedSimpleAnimation()).start();
     }
 
-    public static class NumberAnimationController extends WidgetController<Integer> {
+    public static class NumberAnimationController extends WidgetStateController<Integer> {
         boolean up = true;
+
+        public NumberAnimationController() {
+            super(0);
+        }
 
         private void tick() {
             if (up) {
-                newState(state() + 1);
+                emit(state() + 1);
                 if (state() == 5) {
                     up = false;
                 }
             } else {
-                newState(state() - 1);
+                emit(state() - 1);
                 if (state() == 0) {
                     up = true;
                 }
@@ -38,7 +42,7 @@ public class NestedSimpleAnimation extends StatefulWidget<Integer, NestedSimpleA
 
         @Override
         public void init() {
-            newState(0);
+            emit(0);
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override

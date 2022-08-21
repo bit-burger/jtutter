@@ -10,21 +10,21 @@ public interface WidgetContext {
      * <p>
      * Will throw a runtime exception if from last build, there is still a State registered
      */
-    <StateType, WidgetControllerType extends WidgetController<StateType>> void registerWidgetController(
+    <StateType, WidgetControllerType extends WidgetStateController<StateType>> void registerWidgetController(
             String stateId, WidgetControllerType state
     );
 
     /**
      * Will check if the stateId with the type WidgetControllerType has been in the tree the last build.
      */
-    <StateType, WidgetControllerType extends WidgetController<StateType>> boolean widgetControllerHasEverBeenRegistered(
+    <StateType, WidgetControllerType extends WidgetStateController<StateType>> boolean widgetControllerHasEverBeenRegistered(
             String stateId
     );
 
     /**
      * Will reinsert state from last build in tree and give it back
      */
-    <StateType, WidgetControllerType extends WidgetController<StateType>> WidgetControllerType reinsertWidgetControllerInTree(
+    <StateType, WidgetControllerType extends WidgetStateController<StateType>> WidgetControllerType reinsertWidgetControllerInTree(
             String stateId
     );
 

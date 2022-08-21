@@ -77,13 +77,6 @@ public abstract class OptionalChildWidget extends Widget {
     }
 
     @Override
-    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
-        if (child != null) {
-            child.insertIntoWidgetTree(c, parent);
-        }
-    }
-
-    @Override
     public void insertIntoWidgetTree(WidgetContext c) {
         if (child != null) {
             child.insertIntoWidgetTree(c);
@@ -95,5 +88,13 @@ public abstract class OptionalChildWidget extends Widget {
         if (child != null) {
             child.takeOutOfWidgetTree();
         }
+    }
+
+    @Override
+    public boolean shouldParentRerender(WidgetErrorRecorder errorRecorder) {
+        if(child != null) {
+            return child.shouldParentRerender(errorRecorder);
+        }
+        return false;
     }
 }

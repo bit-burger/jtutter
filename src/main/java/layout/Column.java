@@ -1,6 +1,5 @@
 package layout;
 
-import base_widgets.RerenderParent;
 import base_widgets.WidgetContext;
 import base_widgets.WidgetErrorRecorder;
 import com.googlecode.lanterna.screen.Screen;
@@ -260,12 +259,6 @@ public class Column extends Widget {
     }
 
     @Override
-    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
-        for (Widget child : children) {
-            child.insertIntoWidgetTree(c, parent);
-        }
-    }
-    @Override
     public void insertIntoWidgetTree(WidgetContext c) {
         for (Widget child : children) {
             child.insertIntoWidgetTree(c);
@@ -277,5 +270,15 @@ public class Column extends Widget {
         for (Widget child : children) {
             child.takeOutOfWidgetTree();
         }
+    }
+
+    @Override
+    public boolean shouldParentRerender(WidgetErrorRecorder errorRecorder) {
+        for (Widget child : children) {
+            if(child.shouldParentRerender(errorRecorder)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

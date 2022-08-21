@@ -4,7 +4,7 @@ import com.googlecode.lanterna.screen.Screen;
 
 import java.util.HashMap;
 
-public abstract class StatefulWidget<StateType, WidgetControllerType extends WidgetController<StateType>> extends ControlledWidget<StateType, WidgetControllerType> implements WidgetContext {
+public abstract class StatefulWidget<StateType, WidgetControllerType extends WidgetStateController<StateType>> extends StateControlledWidget<StateType, WidgetControllerType> {
     protected StatefulWidget(String id) {
         super(id);
     }
@@ -12,34 +12,33 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
     protected StatefulWidget() {
     }
 
-    private HashMap<String, WidgetController<?>> oldChildWidgetControllers;
-    private boolean rebuilding = false;
-    private HashMap<String, WidgetController<?>> childWidgetControllers = new HashMap<>();
     private Widget currentWidgetTree;
 
     @Override
-    protected void beforeStateRender(StateType s, boolean isInitialRender) {
-        if (!isInitialRender) {
-            oldChildWidgetControllers = childWidgetControllers;
-            childWidgetControllers = new HashMap<>();
+    protected void beforeStateRender(StateType s) {
+        if (currentWidgetTree != null) {
             currentWidgetTree.takeOutOfWidgetTree();
         }
-        rebuilding = true;
         currentWidgetTree = build(s);
-        currentWidgetTree.insertIntoWidgetTree(this, this::rerender);
-        rebuilding = false;
+        currentWidgetTree.insertIntoWidgetTree(cachedContextParent);
     }
 
     protected abstract Widget build(StateType state);
 
     @Override
-    protected void render(int x, int y, int width, int height, WidgetErrorRecorder errorRecorder) {
-        currentWidgetTree.rawRender(x, y, width, height, cachedScreen, errorRecorder);
+    public boolean shouldParentRerender(WidgetErrorRecorder errorRecorder) {
+        if (super.shouldParentRerender(errorRecorder)) {
+            return true;
+        }
+        if (currentWidgetTree.shouldParentRerender(errorRecorder)) {
+            return boundariesAreDifferentOrRerender(errorRecorder);
+        }
+        return false;
     }
 
     @Override
-    public Screen getScreen() {
-        return cachedScreen;
+    protected void render(int x, int y, int width, int height, Screen screen, WidgetErrorRecorder errorRecorder) {
+        currentWidgetTree.rawRender(x, y, width, height, screen, errorRecorder);
     }
 
     @Override
@@ -75,41 +74,5 @@ public abstract class StatefulWidget<StateType, WidgetControllerType extends Wid
     @Override
     protected int getRealMaxHeight(int maxAvailableWidth, int maxAvailableHeight) {
         return currentWidgetTree.getMaxHeight(maxAvailableWidth, maxAvailableHeight);
-    }
-
-    @Override
-    public <_StateType, _WidgetControllerType extends WidgetController<_StateType>> void registerWidgetController(
-            String stateId, _WidgetControllerType state
-    ) {
-        assert rebuilding : "can only insert, if in rebuilding";
-        childWidgetControllers.put(stateId, state);
-    }
-
-    @Override
-    public <_StateType, _WidgetControllerType extends WidgetController<_StateType>> boolean widgetControllerHasEverBeenRegistered(
-            String stateId
-    ) {
-        assert rebuilding : "can only insert, if in rebuilding";
-        if(oldChildWidgetControllers == null) {
-            return false;
-        }
-        _WidgetControllerType widgetController = (_WidgetControllerType) oldChildWidgetControllers.get(stateId);
-        return widgetController != null;
-    }
-
-    @Override
-    public <_StateType, _WidgetControllerType extends WidgetController<_StateType>> _WidgetControllerType reinsertWidgetControllerInTree(
-            String stateId
-    ) {
-        assert rebuilding : "can only insert, if in rebuilding";
-        _WidgetControllerType oldWidget = null;
-        if (oldChildWidgetControllers != null) {
-            oldWidget = (_WidgetControllerType) oldChildWidgetControllers.get(stateId);
-        }
-        if (oldWidget == null) {
-            throw new IllegalStateException("Cannot reinsert state, if it does not exist");
-        }
-        childWidgetControllers.put(stateId, oldWidget);
-        return oldWidget;
     }
 }

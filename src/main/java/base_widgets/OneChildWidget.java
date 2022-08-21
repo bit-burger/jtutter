@@ -51,11 +51,6 @@ public abstract class OneChildWidget extends Widget {
     }
 
     @Override
-    public void insertIntoWidgetTree(WidgetContext c, RerenderParent parent) {
-        child.insertIntoWidgetTree(c, parent);
-    }
-
-    @Override
     public void insertIntoWidgetTree(WidgetContext c){
         child.insertIntoWidgetTree(c);
     }
@@ -63,5 +58,10 @@ public abstract class OneChildWidget extends Widget {
     @Override
     public void takeOutOfWidgetTree() {
         child.takeOutOfWidgetTree();
+    }
+
+    @Override
+    public boolean shouldParentRerender(WidgetErrorRecorder errorRecorder) {
+        return child.shouldParentRerender(errorRecorder);
     }
 }
